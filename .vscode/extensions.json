@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "JetBrains.kotlin",
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-gradle",
+    "eamodio.gitlens"
+  ]
+}
