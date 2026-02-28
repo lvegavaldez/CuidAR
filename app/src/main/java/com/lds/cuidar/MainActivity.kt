@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lds.cuidar.data.remote.PanicApi
+import com.lds.cuidar.data.remote.PanicRemoteDataSourceImpl
+import com.lds.cuidar.data.repository.PanicRepositoryImpl
 import com.lds.cuidar.domain.LocationServiceImpl
 import com.lds.cuidar.ui.theme.PanicViewModel
 import okhttp3.OkHttpClient
@@ -53,9 +55,10 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val panicApi = retrofit.create(PanicApi::class.java)
-
+        val remoteDataSource = PanicRemoteDataSourceImpl(panicApi)
+        val repository = PanicRepositoryImpl(remoteDataSource)
         val locationService = LocationServiceImpl(this)
-        val viewModel = PanicViewModel(locationService)
+        val viewModel = PanicViewModel(locationService, repository)
         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         setContent {
             PanicButtonApp {
@@ -86,6 +89,5 @@ fun PanicButtonApp(onClick: () -> Unit) {
         }
     }
 }
-
 
 
