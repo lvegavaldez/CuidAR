@@ -1,11 +1,15 @@
 package com.lds.cuidar.data.remote
 
-import retrofit2.Response
-
 class PanicRemoteDataSourceImpl(
-    private val panicApi: PanicApi
+    private val api: PanicApi
 ) : PanicRemoteDataSource {
 
-    override suspend fun sendPanic(request: PanicRequest): Response<Unit> =
-        panicApi.sendPanic(request)
+    override suspend fun sendPanic(request: PanicRequest): Boolean {
+        return try {
+            val response = api.sendPanic(request)
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

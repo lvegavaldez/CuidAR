@@ -18,8 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lds.cuidar.data.remote.PanicApi
 import com.lds.cuidar.domain.LocationServiceImpl
 import com.lds.cuidar.ui.theme.PanicViewModel
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     private val locationPermissionLauncher =
@@ -32,6 +37,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://tu-backend.com/") // CAMBIAR
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+
+        val panicApi = retrofit.create(PanicApi::class.java)
+
         val locationService = LocationServiceImpl(this)
         val viewModel = PanicViewModel(locationService)
         locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,7 +86,6 @@ fun PanicButtonApp(onClick: () -> Unit) {
         }
     }
 }
-
 
 
 
