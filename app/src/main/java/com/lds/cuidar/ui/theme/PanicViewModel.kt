@@ -14,10 +14,13 @@ class PanicViewModel(
 
     fun onPanicClicked() {
         viewModelScope.launch {
+            Log.d("PANIC_FLOW", "Button clicked")
 
             val location = locationService.getCurrentLocation()
+            Log.d("PANIC_FLOW", "Location obtained: $location")
 
             location?.let {
+                Log.d("PANIC_FLOW", "Calling repository")
                 val result = repository.triggerPanic(
                     it.first,
                     it.second
