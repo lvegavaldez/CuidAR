@@ -1,10 +1,11 @@
-package com.lds.cuidar.domain
+package com.lds.cuidar.data.location
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
+import com.lds.cuidar.domain.location.LocationService
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 

@@ -22,48 +22,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.lds.cuidar.core.network.NetworkProvider
+import com.lds.cuidar.data.location.LocationServiceImpl
 import com.lds.cuidar.data.remote.PanicApi
 import com.lds.cuidar.data.remote.PanicRemoteDataSourceImpl
 import com.lds.cuidar.data.repository.PanicRepositoryImpl
-import com.lds.cuidar.domain.LocationServiceImpl
-import com.lds.cuidar.ui.theme.PanicViewModel
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.lds.cuidar.domain.usecase.TriggerPanicUseCase
+import com.lds.cuidar.presentation.viewmodel.PanicViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://webhook.site/1d1d8769-1ac8-4f22-8fc1-9f7d2235f829/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-
+        val retrofit = NetworkProvider.createRetrofit()
         val panicApi = retrofit.create(PanicApi::class.java)
+
         val remoteDataSource = PanicRemoteDataSourceImpl(panicApi)
         val repository = PanicRepositoryImpl(remoteDataSource)
+        val triggerPanicUseCase = TriggerPanicUseCase(repository)
         val locationService = LocationServiceImpl(this)
-        val viewModel = PanicViewModel(locationService, repository)
+        val viewModel = PanicViewModel(triggerPanicUseCase, locationService)
+
         setContent {
             PanicButtonApp {
                 viewModel.onPanicClicked()
             }
         }
     }
-
-
 }
 
 @Composable
