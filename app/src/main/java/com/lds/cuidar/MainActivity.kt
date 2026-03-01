@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://tu-backend.com/") // CAMBIAR
+            .baseUrl("https://webhook.site/1d1d8769-1ac8-4f22-8fc1-9f7d2235f829/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -89,5 +89,4 @@ fun PanicButtonApp(onClick: () -> Unit) {
         }
     }
 }
-
 
